@@ -12,7 +12,8 @@ const db = pgp(connectionString);
 // add query functions
 function getAllPuppies(req, res, next) {
     db.any('select * from pups')
-      .then(function (data) {
+      .then(data=> {
+        // console.log('DATA:', data); // print data;
         res.status(200)
           .json({
             status: 'success',
@@ -20,9 +21,10 @@ function getAllPuppies(req, res, next) {
             message: 'Retrieved ALL puppies'
           });
       })
-      .catch(function (err) {
+      .catch(err=> {
         return next(err);
       });
+      // .finally(db.$pool.end);
   }
 
 module.exports = {
