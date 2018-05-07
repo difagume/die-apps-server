@@ -1,16 +1,26 @@
 const cool = require('cool-ascii-faces')
 const express = require('express')
+//var router = express.Router();
 const path = require('path')
+
+var db = require('./queries');
 
 const logger = require('morgan');
 const bodyParser = require('body-parser');
 
+
+/*
+router.get('/api/puppies/:id', db.getSinglePuppy);
+router.post('/api/puppies', db.createPuppy);
+router.put('/api/puppies/:id', db.updatePuppy);
+router.delete('/api/puppies/:id', db.removePuppy); */
+
 const PORT = process.env.PORT || 5000
-const { Pool } = require('pg');
+/* const { Pool } = require('pg');
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: true
-});
+}); */
 
 // Set up the express app
 const app = express();
@@ -27,6 +37,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
   message: 'Welcome to the beginning of nothingness.',
 })); */
 
+// Rutas
+app.get('/api/puppies', db.getAllPuppies);
+
 app.get('/times', (req, res) => {
   let result = ''
   const times = process.env.TIMES || 5
@@ -36,7 +49,7 @@ app.get('/times', (req, res) => {
   res.send(result)
 })
 
-app.get('/db', async (req, res) => {
+/* app.get('/db', async (req, res) => {
   try {
     const client = await pool.connect()
     const result = await client.query('SELECT * FROM test_table');
@@ -46,7 +59,7 @@ app.get('/db', async (req, res) => {
     console.error(err);
     res.send("Error " + err);
   }
-});
+}); */
 
 app.use(express.static(path.join(__dirname, 'public')))
   .set('views', path.join(__dirname, 'views'))
@@ -54,3 +67,5 @@ app.use(express.static(path.join(__dirname, 'public')))
   .get('/', (req, res) => res.render('pages/index'))
   .get('/cool', (req, res) => res.send(cool()))
   .listen(PORT, () => console.log(`Listening on ${PORT}`))
+
+//module.exports = router;
