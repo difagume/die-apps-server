@@ -8,7 +8,9 @@ const pool = new Pool({
   ssl: true
 });
 
-express.get('/times', (req, res) => {
+var app = express();
+
+app.get('/times', (req, res) => {
   let result = ''
   const times = process.env.TIMES || 5
   for (i = 0; i < times; i++) {
@@ -17,7 +19,7 @@ express.get('/times', (req, res) => {
   res.send(result)
 })
 
-express.get('/db', async (req, res) => {
+app.get('/db', async (req, res) => {
   try {
     const client = await pool.connect()
     const result = await client.query('SELECT * FROM test_table');
@@ -29,8 +31,7 @@ express.get('/db', async (req, res) => {
   }
 });
 
-express()
-  .use(express.static(path.join(__dirname, 'public')))
+app.use(express.static(path.join(__dirname, 'public')))
   .set('views', path.join(__dirname, 'views'))
   .set('view engine', 'ejs')
   .get('/', (req, res) => res.render('pages/index'))
