@@ -6,27 +6,27 @@ var app = express();
 /**
  * Rutas
  */
-app.get('/puppies', getAllPuppies);
+app.get('/', obtenerTodosLosUsuarios);
 
 /**
  * Funciones
  */
-function getAllPuppies(req, res, next) {
-    db.any('select * from pups')
-      .then(data=> {
-        // console.log('DATA:', data); // print data;
-        res.status(200)
-          .json({
-            status: 'success',
-            data: data,
-            message: 'Retrieved ALL puppies'
-          });
-      })
-      .catch(err=> {
-        return next(err);
-      });
-      // .finally(db.$pool.end);
-  }
+function obtenerTodosLosUsuarios(req, res, next) {
+  db.any('select * from usuarios')
+    .then(data=> {
+      // console.log('DATA:', data); // print data;
+      res.status(200)
+        .json({
+          status: 'ok',
+          data: data,
+          message: 'Usuarios retornados'
+        });
+    })
+    .catch(err=> {
+      return next(err);
+    });
+    // .finally(db.$pool.end);
+}
 
   module.exports = app;
 
