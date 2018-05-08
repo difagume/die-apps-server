@@ -1,19 +1,11 @@
 const cool = require('cool-ascii-faces')
 const express = require('express')
-//var router = express.Router();
 const path = require('path')
 
-var db = require('./queries');
+var u = require('./routes/usuario');
 
 const logger = require('morgan');
 const bodyParser = require('body-parser');
-
-
-/*
-router.get('/api/puppies/:id', db.getSinglePuppy);
-router.post('/api/puppies', db.createPuppy);
-router.put('/api/puppies/:id', db.updatePuppy);
-router.delete('/api/puppies/:id', db.removePuppy); */
 
 const PORT = process.env.PORT || 5000
 /* const { Pool } = require('pg');
@@ -32,13 +24,14 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
+/**
+ * RUTAS
+ */
 // Setup a default catch-all route that sends back a welcome message in JSON format.
 /* app.get('*', (req, res) => res.status(200).send({
   message: 'Welcome to the beginning of nothingness.',
 })); */
-
-// Rutas
-app.get('/api/puppies', db.getAllPuppies);
+app.get('/api/puppies', u.getAllPuppies);
 
 app.get('/times', (req, res) => {
   let result = ''
@@ -67,5 +60,3 @@ app.use(express.static(path.join(__dirname, 'public')))
   .get('/', (req, res) => res.render('pages/index'))
   .get('/cool', (req, res) => res.send(cool()))
   .listen(PORT, () => console.log(`Listening on ${PORT}`))
-
-//module.exports = router;
