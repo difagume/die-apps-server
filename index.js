@@ -2,8 +2,6 @@ const cool = require('cool-ascii-faces')
 const express = require('express')
 const path = require('path')
 
-var u = require('./routes/usuario');
-
 const logger = require('morgan');
 const bodyParser = require('body-parser');
 
@@ -24,14 +22,8 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-/**
- * RUTAS
- */
-// Setup a default catch-all route that sends back a welcome message in JSON format.
-/* app.get('*', (req, res) => res.status(200).send({
-  message: 'Welcome to the beginning of nothingness.',
-})); */
-app.get('/api/puppies', u.getAllPuppies);
+// Importar rutas
+var usuarioRoutes = require('./routes/usuario');
 
 app.get('/times', (req, res) => {
   let result = ''
@@ -55,6 +47,7 @@ app.get('/times', (req, res) => {
 }); */
 
 app.use(express.static(path.join(__dirname, 'public')))
+  .use('/usuario', usuarioRoutes)
   .set('views', path.join(__dirname, 'views'))
   .set('view engine', 'ejs')
   .get('/', (req, res) => res.render('pages/index'))

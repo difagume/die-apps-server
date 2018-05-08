@@ -1,6 +1,16 @@
+var express = require('express');
 var db = require('../db');
 
-// add query functions
+var app = express();
+
+/**
+ * Rutas
+ */
+app.get('/puppies', getAllPuppies);
+
+/**
+ * Funciones
+ */
 function getAllPuppies(req, res, next) {
     db.any('select * from pups')
       .then(data=> {
@@ -18,10 +28,12 @@ function getAllPuppies(req, res, next) {
       // .finally(db.$pool.end);
   }
 
-  module.exports = {
-    getAllPuppies: getAllPuppies/*  ,
+  module.exports = app;
+
+  /*module.exports = {
+    getAllPuppies: getAllPuppies  ,
     getSinglePuppy: getSinglePuppy,
     createPuppy: createPuppy,
     updatePuppy: updatePuppy,
-    removePuppy: removePuppy  */
-  };
+    removePuppy: removePuppy
+  };*/
