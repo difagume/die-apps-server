@@ -6,7 +6,10 @@ npm-debug.log
 *.env
 *.dev
 .DS_Store
+die-apps-server.rar
 
 # Docker
 Dockerfile
 docker-compose.yml
+
+
