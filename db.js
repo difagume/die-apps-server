@@ -21,3 +21,17 @@ module.exports = db;
     img text,
     social boolean
 ) */
+
+/* CREATE TABLE general.usuarios (
+    ID SERIAL PRIMARY KEY,
+    nombre VARCHAR,
+    email VARCHAR,
+    password VARCHAR,
+    img VARCHAR,
+    role VARCHAR,
+      social BOOLEAN
+  );
+  
+  INSERT INTO general.usuarios(
+      nombre, email, password, img, role, social)
+      VALUES ('Diego Fabricio', 'difagume@gmail.com', '123456', null,  'ADMIN_ROLE', false); */

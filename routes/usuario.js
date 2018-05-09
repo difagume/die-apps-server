@@ -12,23 +12,29 @@ app.get('/', obtenerTodosLosUsuarios);
  * Funciones
  */
 function obtenerTodosLosUsuarios(req, res, next) {
+  var t;
+  db.one("SELECT count(*) FROM usuarios")
+    .then(data => {
+      //return parseInt(data.count);
+      t = parseInt(data.count);
+    })
+
   db.any('select * from usuarios')
-    .then(data=> {
-      // console.log('DATA:', data); // print data;
+    .then(data => {
       res.status(200)
         .json({
-          status: 'ok',
-          data: data,
-          message: 'Usuarios retornados'
+          ok: true,
+          usuarios: data,
+          total: t
         });
     })
-    .catch(err=> {
+    .catch(err => {
       return next(err);
     });
-    // .finally(db.$pool.end);
+  // .finally(db.$pool.end);
 }
 
-  module.exports = app;
+module.exports = app;
 
   /*module.exports = {
     getAllPuppies: getAllPuppies  ,
