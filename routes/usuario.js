@@ -1,5 +1,6 @@
 var express = require('express');
 var db = require('../db');
+var bcrypt = require('bcryptjs');
 
 var app = express();
 
@@ -36,7 +37,8 @@ function obtenerTodosLosUsuarios(req, res, next) {
 }
 
 function crearUsuario(req, res, next) {
-  req.body.age = parseInt(req.body.age);
+  req.body.password = bcrypt.hashSync(req.body.password, 10);
+  //req.body.age = parseInt(req.body.age);
   db.one('insert into usuarios(nombre, email, password, role, img, social)' +
     'values(${nombre}, ${email}, ${password}, ${role}, ${img}, ${social})' +
     'RETURNING *',

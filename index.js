@@ -4,8 +4,8 @@ const path = require('path')
 
 const logger = require('morgan');
 const bodyParser = require('body-parser');
+const PUERTO = require('./config/config').PUERTO;
 
-const PORT = process.env.PORT || 5000
 /* const { Pool } = require('pg');
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -24,6 +24,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // Importar rutas
 var usuarioRoutes = require('./routes/usuario');
+var loginRoutes = require('./routes/login');
 
 app.get('/times', (req, res) => {
   let result = ''
@@ -48,8 +49,9 @@ app.get('/times', (req, res) => {
 
 app.use(express.static(path.join(__dirname, 'public')))
   .use('/usuario', usuarioRoutes)
+  .use('/login', loginRoutes)
   .set('views', path.join(__dirname, 'views'))
   .set('view engine', 'ejs')
   .get('/', (req, res) => res.render('pages/index'))
   .get('/cool', (req, res) => res.send(cool()))
-  .listen(PORT, () => console.log(`Listening on ${PORT}`))
+  .listen(PUERTO, () => console.log('Express server escuchando en el puerto ' + PUERTO + ': \x1b[32m%s\x1b[0m', 'online'))
