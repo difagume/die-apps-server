@@ -9,6 +9,7 @@ var app = express();
  */
 app.get('/', obtenerTodosLosUsuarios);
 app.post('/', crearUsuario);
+app.put('/:id', actualizarUsuario);
 
 /**
  * Funciones
@@ -26,12 +27,11 @@ function obtenerTodosLosUsuarios(req, res) {
       res.status(200)
         .json({
           ok: true,
-          usuarios: data/*,
-          total: t*/
+          usuarios: data
         });
     })
     .catch(err => {
-      return res.status(400).send(err.name + ': ' + err.message);
+      mensajeError(res, err, 'Error al obtener los usuarios');
     });
   // .finally(db.$pool.end);
 }
@@ -61,21 +61,54 @@ function crearUsuario(req, res) {
               });
           })
           .catch(err => {
-            return res.status(400).send(err.name + ': ' + err.message);
+            mensajeError(res, err, 'Error al crear el usuario');
           });
       }
     })
     .catch(err => {
-      return res.status(400).send(err.name + ': ' + err.message);
+      mensajeError(res, err, 'Error al buscar el usuario');
     });
 }
 
-module.exports = app;
+function actualizarUsuario(req, res) {
+  var id = req.params.id;
+  var usuario = req.body;
+  db.result('UPDATE public.usuarios SET username=$1, email=$2, rol=$3, ' +
+    'img=$4, social=$5, nombre=$6, apellido=$7 WHERE id=$8;',
+    [usuario.username, usuario.email, usuario.rol, usuario.img,
+    usuario.social, usuario.nombre, usuario.apellido, id])
+    .then(result => {
+      if (result.rowCount > 0) {
+        res.status(200)
+          .json({
+            ok: true,
+            name: 'Usuario actualizado 😏',
+            message: `El usuario ${usuario.username} ha sido actualizado`
+          });
+      } else {
+        res.status(400).send({
+          ok: false,
+          error: { name: 'Error en la actualización 🤔', message: 'El usuario no fue encontrado' }
+        });
+      }
+    })
+    .catch(err => {
+      mensajeError(res, err, 'Error al actualizar el usuario');
+    });
+}
 
-  /*module.exports = {
-    getAllPuppies: getAllPuppies  ,
-    getSinglePuppy: getSinglePuppy,
-    createPuppy: createPuppy,
-    updatePuppy: updatePuppy,
-    removePuppy: removePuppy
-  };*/
+function mensajeError(res, err, mensaje) {
+  if (err.code === 'ECONNREFUSED') {
+    res.status(400).send({
+      ok: false,
+      error: { name: `${mensaje} 😪`, message: 'Verifique la conexión con la bd' }
+    });
+  } else {
+    res.status(400).send({
+      ok: false,
+      error: { name: `${mensaje} 😱`, message: 'Existe un error en la sintaxis' }
+    });
+  }
+}
+
+module.exports = app;

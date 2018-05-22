@@ -53,12 +53,9 @@ function login(req, res) {
             }
         })
         .catch(err => {
-            // res.status(400).send(err.name + ': ' + err.message);
-            return res.status(400).json({
+            res.status(400).send({
                 ok: false,
-                mensaje: 'Error al buscar usuario',
-                //errors: err
-                error: err.name + ': ' + err.message
+                error: { name: 'Error en la conexión 😨', message: 'Verifique la conexión con la bd' }
             });
         });
 }
