@@ -1,6 +1,7 @@
 var express = require('express');
 var db = require('../db');
 var bcrypt = require('bcryptjs');
+var mdAutenticacion = require('../middlewares/autenticacion');
 
 var app = express();
 
@@ -8,8 +9,9 @@ var app = express();
  * Rutas
  */
 app.get('/', obtenerTodosLosUsuarios);
-app.post('/', crearUsuario);
-app.put('/:id', actualizarUsuario);
+app.post('/registrar', registrarUsuario);
+// app.post('/', crearUsuario);
+app.put('/:id', mdAutenticacion.verficaToken, actualizarUsuario);
 
 /**
  * Funciones
@@ -36,33 +38,50 @@ function obtenerTodosLosUsuarios(req, res) {
   // .finally(db.$pool.end);
 }
 
-function crearUsuario(req, res) {
+function registrarUsuario(req, res) {
   var usuario = req.body.usuario;
+  //Verifico que el usuario no exista
   db.oneOrNone('SELECT count(id) FROM public.usuarios WHERE usuario = $1', [usuario])
     .then(data => {
-      if (parseInt(data.count) > 0) { //Verifico que el usuario no exista
+      if (parseInt(data.count) > 0) {
         return res.status(400).json({
           ok: false,
           error: { name: 'Error al crear usuario 🤕', message: `El usuario ${usuario} ya existe` }
         });
       }
-      else { // Creo el usuario
-        req.body.password = bcrypt.hashSync(req.body.password, 10);
-        //req.body.age = parseInt(req.body.age);
-        db.one('insert into usuarios(usuario, email, password, nombre, apellido, rol, img, social)' +
-          'values(${usuario}, ${email}, ${password}, ${nombre}, ${apellido}, ${rol}, ${img}, ${social})' +
-          'RETURNING *', req.body)
-          .then(usuarioCreado => {
-            res.status(200)
-              .json({
-                ok: true,
-                usuario: usuarioCreado,
-                name: 'Usuario creado 😏',
-                message: `El usuario: ${usuarioCreado.usuario} ha sido creado`
+      else { // Compuebo que el correo no exista
+        var email = req.body.email;
+        db.oneOrNone('SELECT count(id) FROM public.usuarios WHERE email = $1', [email])
+          .then(data => {
+            if (parseInt(data.count) > 0) {
+              return res.status(400).json({
+                ok: false,
+                error: { name: 'Error al crear usuario 🙄', message: `El email ${email} ya existe` }
               });
+            }
+            else {
+              // Creo el usuario
+              req.body.password = bcrypt.hashSync(req.body.password, 10);
+              //req.body.age = parseInt(req.body.age);
+              db.one('insert into usuarios(usuario, email, password, nombre, apellido, rol, img, social)' +
+                'values(${usuario}, ${email}, ${password}, ${nombre}, ${apellido}, ${rol}, ${img}, ${social})' +
+                'RETURNING *', req.body)
+                .then(usuarioCreado => {
+                  res.status(200)
+                    .json({
+                      ok: true,
+                      usuario: usuarioCreado,
+                      name: 'Usuario creado 😏',
+                      message: `El usuario: ${usuarioCreado.usuario} ha sido creado`
+                    });
+                })
+                .catch(err => {
+                  mensajeError(res, err, 'Error al crear el usuario');
+                });
+            }
           })
           .catch(err => {
-            mensajeError(res, err, 'Error al crear el usuario');
+            mensajeError(res, err, 'Error al buscar el usuario');
           });
       }
     })
