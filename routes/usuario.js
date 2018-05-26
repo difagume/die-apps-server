@@ -12,6 +12,7 @@ app.get('/', obtenerTodosLosUsuarios);
 app.post('/registrar', registrarUsuario);
 // app.post('/', crearUsuario);
 app.put('/:id', mdAutenticacion.verficaToken, actualizarUsuario);
+app.put('/eliminar/:id', mdAutenticacion.verficaToken, eliminarUsuario);
 
 /**
  * Funciones
@@ -24,7 +25,7 @@ function obtenerTodosLosUsuarios(req, res) {
       t = parseInt(data.count);
     }) */
 
-  db.any('select * from usuarios')
+  db.any('select * from usuarios where activo = true order by 1')
     .then(data => {
       res.status(200)
         .json({
@@ -117,8 +118,32 @@ function actualizarUsuario(req, res) {
     });
 }
 
+function eliminarUsuario(req, res) {
+  var id = req.params.id;
+  var usuario = req.body.usuario;
+  db.result('UPDATE public.usuarios SET activo = false WHERE id=$1;', [id])
+    .then(result => {
+      if (result.rowCount > 0) {
+        res.status(200)
+          .json({
+            ok: true,
+            name: 'Usuario eliminado 😪',
+            message: `El usuario ${usuario} ha sido eliminado`
+          });
+      } else {
+        res.status(400).send({
+          ok: false,
+          error: { name: 'Error en la eliminación 😲', message: 'El usuario no fue encontrado' }
+        });
+      }
+    })
+    .catch(err => {
+      mensajeError(res, err, 'Error al eliminar el usuario');
+    });
+}
+
 function mensajeError(res, err, mensaje) {
-  //console.log('errorrrrrrr', err);
+  // console.log('errorrrrrrr', err);
   if (err.code === 'ECONNREFUSED') {
     res.status(400).send({
       ok: false,

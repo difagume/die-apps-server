@@ -19,7 +19,7 @@ app.post('/', login);
 function login(req, res) {
     var password = req.body.password;
     var usuario = req.body.usuario;
-    db.oneOrNone('SELECT id, usuario, email, password, nombre, apellido, rol, img, social FROM usuarios WHERE usuario=$1', [usuario])
+    db.oneOrNone('SELECT id, usuario, email, password, nombre, apellido, rol, img, social FROM usuarios WHERE usuario=$1 AND activo=true', [usuario])
         .then(usuario => {
             if (!usuario) {
                 return res.status(400).json({
