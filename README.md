@@ -40,3 +40,6 @@ For more information about using Node.js on Heroku, see these Dev Center article
 # die-apps-server
 # Actualizar paquetes npm
 https://docs.npmjs.com/getting-started/updating-local-packages
+
+# Consultas sql
+https://github.com/vitaly-t/pg-promise/blob/master/examples/select-insert.md

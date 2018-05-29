@@ -33,6 +33,7 @@ app.use(function (req, res, next) {
 // Importar rutas
 var usuarioRoutes = require('./routes/usuario');
 var loginRoutes = require('./routes/login');
+var rolRoutes = require('./routes/rol')
 
 app.get('/times', (req, res) => {
   let result = ''
@@ -56,8 +57,9 @@ app.get('/times', (req, res) => {
 }); */
 
 app.use(express.static(path.join(__dirname, 'public')))
-  .use('/usuario', usuarioRoutes)
   .use('/login', loginRoutes)
+  .use('/usuario', usuarioRoutes)
+  .use('/rol', rolRoutes)
   .set('views', path.join(__dirname, 'views'))
   .set('view engine', 'ejs')
   .get('/', (req, res) => res.render('pages/index'))
