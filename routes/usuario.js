@@ -33,6 +33,7 @@ function obtenerTodosLosUsuarios(req, res) {
 
 function registrarUsuario(req, res) {
   var usuario = req.body;
+  usuario.password = bcrypt.hashSync(usuario.password, 10);
   db.one('insert into usuarios(usuario, email, password, nombre, apellido, rol, img, social)' +
     'values(${usuario}, ${email}, ${password}, ${nombre}, ${apellido}, ${rol}, ${img}, ${social})' +
     'RETURNING *', usuario)

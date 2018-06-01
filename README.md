@@ -43,3 +43,6 @@ https://docs.npmjs.com/getting-started/updating-local-packages
 
 # Consultas sql
 https://github.com/vitaly-t/pg-promise/blob/master/examples/select-insert.md
+
+# Recuperar contraseña
+https://www.codementor.io/olatundegaruba/password-reset-using-jwt-ag2pmlck0

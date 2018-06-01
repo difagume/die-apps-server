@@ -19,6 +19,8 @@
     "express": "^4.15.2",
     "jsonwebtoken": "^8.2.1",
     "morgan": "^1.9.0",
+    "nodemailer": "^4.6.5",
+    "nodemailer-express-handlebars": "^3.0.0",
     "pg": "^7.4.3",
     "pg-promise": "^8.4.4"
   },
