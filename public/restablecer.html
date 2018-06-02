@@ -1,20 +1,108 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 
 <head>
-    <title>Reset Password</title>
+    <meta charset="utf-8">
+    <title>frontApp - Restablecer contraseña</title>
+    <base href="/">
+    <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge"> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+    <link href="https://fonts.googleapis.com/css?family=Arimo:400,700|Playfair+Display:400,400i,700,700i|Montserrat:300,400,600,900|Space+Mono"
+        rel="stylesheet">
+    <style type="text/css">
+        .page-loading {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            overflow: hidden;
+            background: rgb(51, 51, 51);
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            z-index: -1;
+        }
+
+        .loading-icon {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 38px;
+            height: 38px;
+            margin-left: -19px;
+            margin-top: -19px;
+        }
+
+        app-root:empty~.page-loading {
+            opacity: 1;
+            z-index: 1;
+        }
+    </style>
+    <script type="text/javascript">
+        (function (window) {
+            if (typeof SVGElement.prototype.contains == 'undefined') {
+                SVGElement.prototype.contains = HTMLDivElement.prototype.contains;
+            }
+
+            if (!!window.MSInputMethodContext && !!document.documentMode || document.documentMode === 10) {
+                function MouseEvent(eventType, params) {
+                    params = params || {
+                        bubbles: false,
+                        cancelable: false
+                    };
+                    var mouseEvent = document.createEvent('MouseEvent');
+                    mouseEvent.initMouseEvent(eventType, params.bubbles, params.cancelable, window, 0, 0, 0, 0, 0, false, false,
+                        false, false, 0, null);
+
+                    return mouseEvent;
+                }
+                MouseEvent.prototype = Event.prototype;
+                window.MouseEvent = MouseEvent;
+            }
+        })(window);
+
+    </script>
+    <!-- <link rel="stylesheet/scss" type="text/css" href="../assets/styles/app.scss"> -->
+    <link rel="stylesheet" href="../assets/styles.css">
 </head>
 
 <body>
-    <div>
-        <h3>Password confirmation!</h3>
-        <form>
-            <label for="newPassword">New Password</label>
-            <input type="password" name="newPassword" id="newPassword" required>
-            <label for="verifyPassword">Confirm Password</label>
-            <input type="password" name="verifyPassword" id="verifyPassword" required>
-            <input type="submit" name="submit" id="resetPasswordClickEvt" value="Reset Password">
-        </form>
+    <noscript>
+        <p>
+            This page requires JavaScript to work properly. Please enable JavaScript in your browser.
+        </p>
+    </noscript>
+
+    <div class="d-flex align-items-stretch min-height-100 h-100">
+        <div class="bg-cover bg-4 d-none d-md-inline-flex col-md-6 col-lg-8"></div>
+        <div class="card card-body mb-0 rounded-0 p-5 col-sm-12 col-md-6 col-lg-4">
+            <form>
+                <div class="mb-3">
+                    <img src="../assets/logo.png" class="avatar-xs mb-1" alt="">
+                    <p class="ff-headers text-uppercase">Restablecer tu contraseña</p>
+                </div>
+                <fieldset class="form-group">
+                    <label for="newPassword" class="form-control-label">
+                        Ingresa tu nueva contraseña
+                    </label>
+                    <input type="password" class="form-control" placeholder="nueva contraseña" name="newPassword" id="newPassword" required>
+                    <!-- <div class="invalid-feedback" *ngIf="form.controls['uname'].hasError('required') && form.controls['uname'].touched">Username is required.</div> -->
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="verifyPassword" class="form-control-label">
+                        Confirma tu nueva contraseña
+                    </label>
+                    <input type="password" class="form-control" placeholder="confirma contraseña" name="verifyPassword" id="verifyPassword" required>
+                    <!-- <div class="invalid-feedback" *ngIf="form.controls['uname'].hasError('required') && form.controls['uname'].touched">Username is required.</div> -->
+                </fieldset>
+                <button class="btn btn-primary waves-effect" type="submit" name="submit" id="resetPasswordClickEvt">Actualizar la contraseña</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="page-loading">
+        <img src="../assets/oval.svg" class="loading-icon" />
     </div>
     <script type="text/javascript">
         var resetPasswordClickEvt = document.getElementById('resetPasswordClickEvt');
@@ -46,6 +134,9 @@
             xhttp.send(data);
         }
     </script>
+    <!--Button Wave Effects -->
+    <script src="../js/waves.js"></script>
+    <!-- SweetAlert -->
     <script src="../js/sweetalert.min.js"></script>
 </body>
 
