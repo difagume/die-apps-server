@@ -1,14 +1,16 @@
+require('dotenv').config();
 var path = require('path');
 var hbs = require('nodemailer-express-handlebars'),
-    email = process.env.MAILER_EMAIL_ID || 'auth_email_address@gmail.com',
-    pass = process.env.MAILER_PASSWORD || 'auth_email_pass'
+    email = process.env.MAILER_EMAIL_ID,
+    pass = process.env.MAILER_PASSWORD
 nodemailer = require('nodemailer');
 
 var smtpTransport = nodemailer.createTransport({
-    service: process.env.MAILER_SERVICE_PROVIDER || 'Gmail',
+    //service: process.env.MAILER_SERVICE_PROVIDER || 'Gmail',
+    service: process.env.MAILER_SERVICE_PROVIDER || 'Mailgun',
     auth: {
-        user: 'xxxx@gmail.com',
-        pass: 'xxxx'
+        user: email,
+        pass: pass
     }
 });
 

@@ -46,3 +46,9 @@ https://github.com/vitaly-t/pg-promise/blob/master/examples/select-insert.md
 
 # Recuperar contraseña
 https://www.codementor.io/olatundegaruba/password-reset-using-jwt-ag2pmlck0
+
+# env
+https://codeburst.io/how-to-easily-set-up-node-environment-variables-in-your-js-application-d06740f9b9bd
+
+# Servidor smtp
+https://app.mailgun.com/app/dashboard

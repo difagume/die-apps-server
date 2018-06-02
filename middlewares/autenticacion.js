@@ -1,6 +1,7 @@
 var jwt = require('jsonwebtoken'); // https://github.com/auth0/node-jsonwebtoken
+require('dotenv').config();
 
-var SEED = require('../config/config').SEED;
+var SEED = process.env.SEED;
 
 //=============================
 // Verificar token

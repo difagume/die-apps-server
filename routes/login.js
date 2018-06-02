@@ -4,10 +4,11 @@ var bcrypt = require('bcryptjs'); // https://github.com/dcodeIO/bcrypt.js
 var jwt = require('jsonwebtoken'); // https://github.com/auth0/node-jsonwebtoken
 var async = require('async');
 const crypto = require('crypto');
+require('dotenv').config();
 var path = require('path');
 var nm = require('../config/nm-conf');
 var mdAutenticacion = require('../middlewares/autenticacion');
-var SEED = require('../config/config').SEED;
+var SEED = process.env.SEED;
 var CADUCIDAD_TOKEN = require('../config/config').CADUCIDAD_TOKEN;
 
 var app = express();
