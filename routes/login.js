@@ -91,7 +91,7 @@ function olvidoContrasena(req, res) {
                     var token = buffer.toString('hex');
                     done(err, user, token);
                 }); */
-                var token = jwt.sign({ usuario: user.usuario }, SEED, { expiresIn: '55m' });
+                var token = jwt.sign({ usuario: user.usuario }, SEED, { expiresIn: '30m' });
                 done(null, user, token);
             },
             /* function (user, token, done) {
@@ -165,8 +165,9 @@ function restablecerContrasena(req, res, next) {
                                         to: usuario.email,
                                         from: nm.email,
                                         template: 'reset-password-email',
-                                        subject: 'Confirmación de reseteo de contraseña',
+                                        subject: 'Confirmación de actualización de contraseña',
                                         context: {
+                                            url: 'http://localhost:4200/login',
                                             name: usuario.nombre + ' ' + usuario.apellido
                                         }
                                     };

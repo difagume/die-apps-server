@@ -64,7 +64,7 @@
 
     </script>
     <!-- <link rel="stylesheet/scss" type="text/css" href="../assets/styles/app.scss"> -->
-    <link rel="stylesheet" href="../assets/styles.css">
+    <link rel="stylesheet" href="../assets/css/styles.css">
 </head>
 
 <body>
@@ -108,19 +108,32 @@
         var resetPasswordClickEvt = document.getElementById('resetPasswordClickEvt');
         resetPasswordClickEvt.addEventListener('click', resetPasswordClicked);
         function resetPasswordClicked(event) {
-            event.preventDefault();
-            var token = document.location.href.split('token=')[1];
-            var data = "newPassword=" + document.getElementById('newPassword').value + '&verifyPassword=' + document.getElementById('verifyPassword').value + '&token=' + token;
-            ajaxCall(data, "http://localhost:5000/login/restablecer", function (status, response) {
-                if (status == 200) {
-                    //alert(response.message);
-                    swal(response.name, response.message, "success");
-                } else {
-                    //alert('Error', response)
-                    //alert(JSON.stringify(response.message));
-                    swal(response.error.name, response.error.message, response.error.icono);
-                }
-            });
+            var txtPass = document.getElementById("newPassword");
+            var txtConfPass = document.getElementById("verifyPassword");
+            if (txtPass.checkValidity() && txtConfPass.checkValidity()) {
+                event.preventDefault();
+                var token = document.location.href.split('token=')[1];
+                var data = "newPassword=" + document.getElementById('newPassword').value + '&verifyPassword=' + document.getElementById('verifyPassword').value + '&token=' + token;
+                ajaxCall(data, "http://localhost:5000/login/restablecer", function (status, response) {
+                    if (status == 200) {
+                        //alert(response.message);
+                        //swal(response.name, response.message, "success");
+                        swal({
+                            title: response.name,
+                            text: response.message,
+                            type: "success",
+                            timer: 3000,
+                            showConfirmButton: false
+                        }, function () {
+                            window.location.href = "//localhost:4200/login";
+                        });
+                    } else {
+                        //alert('Error', response)
+                        //alert(JSON.stringify(response.message));
+                        swal(response.error.name, response.error.message, response.error.icono);
+                    }
+                });
+            }
         }
         function ajaxCall(data, url, callback) {
             var xhttp = new XMLHttpRequest();
@@ -135,9 +148,12 @@
         }
     </script>
     <!--Button Wave Effects -->
-    <script src="../js/waves.js"></script>
+    <script src="../assets/js/waves.js"></script>
     <!-- SweetAlert -->
-    <script src="../js/sweetalert.min.js"></script>
+    <script src="../assets/js/sweetalert2.min.js"></script>
+    <link rel="stylesheet" href="../assets/css/sweetalert2.min.css">
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert-dev.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css"> -->
 </body>
 
 </html>

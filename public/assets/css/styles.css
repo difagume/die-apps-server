@@ -8773,7 +8773,7 @@ ng-sidebar .ng-sidebar {
 .bg-3 {
   background-image: url('bg3.jpg'); }
 .bg-4 {
-  background-image: url('bg4.jpg'); }
+  background-image: url('../bg4.jpg'); }
 .lockcode {
   display: block;
   max-width: 280px;
