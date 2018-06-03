@@ -80,10 +80,10 @@ function olvidoContrasena(req, res) {
                             //done('User not found.');
                             return res.status(400).json({
                                 ok: false,
-                                error: { name: 'Error en recuperar contraseña 😞', message: `Usuario ${req.body.usuario} no encontrado` }
+                                error: { name: 'Error actualizando contraseña 😞', message: `Usuario ${req.body.usuario} no encontrado` }
                             });
                         }
-                    })
+                    });
             },
             (user, done) => {
                 // create the random token
@@ -94,13 +94,21 @@ function olvidoContrasena(req, res) {
                 var token = jwt.sign({ usuario: user.usuario }, SEED, { expiresIn: '30m' });
                 done(null, user, token);
             },
-            /* function (user, token, done) {
-                User.findByIdAndUpdate({ _id: user._id }, { reset_password_token: token, reset_password_expires: Date.now() + 86400000 }, { upsert: true, new: true }).exec(function (err, new_user) {
-                    done(err, token, new_user);
-                });
-            }, */
-            function (user, token, done) {
-                //function (token, user, done) {   
+            (user, token, done) => {
+                db.one('UPDATE usuarios SET estado=\'RESETEO_PASSWORD\' WHERE id=$1 RETURNING *;', [user.id])
+                    .then(usuReseteo => {
+                        if (usuReseteo) {
+                            done(null, token, usuReseteo);
+                        }/*  else {
+                            //done('User not found.');
+                            return res.status(400).json({
+                                ok: false,
+                                error: { name: 'Error actualizando contraseña 😞', message: `Usuario ${req.body.usuario} no encontrado` }
+                            }); 
+                        }*/
+                    });
+            },
+            (token, user, done) => {
                 var data = {
                     to: user.email,
                     from: nm.email,
@@ -118,7 +126,7 @@ function olvidoContrasena(req, res) {
                             .json({
                                 ok: true,
                                 name: 'Email enviado 🤩',
-                                message: `Se te ha enviado un correo a la dirección ${user.email} con los pasos para restablecer la contraseña`
+                                message: `Se te ha enviado un correo a la dirección ${user.email} con los pasos para actualizar la contraseña`
                             });
                     } else {
                         return done(err);
@@ -135,69 +143,77 @@ function restablecerContrasena(req, res, next) {
     jwt.verify(token, SEED, (err, decoded) => {
         if (err) {
             return res.status(400).send({
-                error: { name: 'Error restableciendo contraseña 😲', message: 'El token de restablecimiento de contraseña no es válido o ha expirado', icono: 'error' }
+                error: { name: 'Error actualizando contraseña ☹️', message: 'El token de restablecimiento de contraseña no es válido o ha expirado', icono: 'error' }
             });
         }
         else {
             req.usuario = decoded.usuario;
-            db.oneOrNone('SELECT id, usuario, email, password, nombre, apellido, rol, img, social FROM usuarios WHERE usuario=$1 AND activo=true', [req.usuario])
+            db.oneOrNone('SELECT id, usuario, email, nombre, apellido, estado FROM usuarios WHERE usuario=$1 AND activo=true', [req.usuario])
                 .then(usuario => {
-                    if (req.body.newPassword === req.body.verifyPassword) {
+                    if (usuario.estado === 'RESETEO_PASSWORD') {
 
-                        if (req.body.newPassword.length < 5) {
-                            return res.status(422).send({
-                                ok: false,
-                                error: { name: 'Error restableciendo contraseña 😲', message: 'La contraseña es muy pequeña', icono: 'warning' }
-                            });
-                        }
-                        // Actualizo la contraseña del usuario
-                        var password = bcrypt.hashSync(req.body.newPassword, 10);
-                        db.result('UPDATE usuarios SET password=$1 WHERE usuario=$2 and activo = true;', [password, usuario.usuario])
-                            .then(result => {
-                                if (result.rowCount > 0) {
-                                    res.status(200)
-                                        .json({
-                                            ok: true,
-                                            name: 'Contraseña restablecida 😄',
-                                            message: `Se actualizó la contraseña del usuario ${usuario.usuario}`
-                                        });
-                                    var data = {
-                                        to: usuario.email,
-                                        from: nm.email,
-                                        template: 'reset-password-email',
-                                        subject: 'Confirmación de actualización de contraseña',
-                                        context: {
-                                            url: 'http://localhost:4200/login',
-                                            name: usuario.nombre + ' ' + usuario.apellido
-                                        }
-                                    };
+                        if (req.body.newPassword === req.body.verifyPassword) {
 
-                                    nm.sendMail(data, function (err) {
-                                        if (!err) {
-                                            return res.json({ message: 'Reseteo de contraseña' });
-                                        } else {
-                                            return res.status(400).send({
-                                                err
+                            if (req.body.newPassword.length < 5) {
+                                return res.status(422).send({
+                                    ok: false,
+                                    error: { name: 'Error actualizando contraseña 😮', message: 'La contraseña es muy pequeña', icono: 'warning' }
+                                });
+                            }
+                            // Actualizo la contraseña del usuario
+                            var password = bcrypt.hashSync(req.body.newPassword, 10);
+                            db.result('UPDATE usuarios SET password=$1, estado=\'REGISTRADO\' WHERE usuario=$2 and activo = true;', [password, usuario.usuario])
+                                .then(result => {
+                                    if (result.rowCount > 0) {
+                                        res.status(200)
+                                            .json({
+                                                ok: true,
+                                                name: 'Contraseña restablecida 😄',
+                                                message: `Se actualizó la contraseña del usuario ${usuario.usuario}`
                                             });
-                                        }
-                                    });
-                                } else {
+                                        var data = {
+                                            to: usuario.email,
+                                            from: nm.email,
+                                            template: 'reset-password-email',
+                                            subject: 'Confirmación de actualización de contraseña',
+                                            context: {
+                                                url: 'http://localhost:4200/login',
+                                                name: usuario.nombre + ' ' + usuario.apellido
+                                            }
+                                        };
+
+                                        nm.sendMail(data, function (err) {
+                                            if (!err) {
+                                                return res.json({ message: 'Reseteo de contraseña' });
+                                            } else {
+                                                return res.status(400).send({
+                                                    err
+                                                });
+                                            }
+                                        });
+                                    } else {
+                                        res.status(400).send({
+                                            ok: false,
+                                            error: { name: 'Error actualizando contraseña 😱', message: 'El usuario no fue encontrado', icono: 'error' }
+                                        });
+                                    }
+                                })
+                                .catch(err => {
                                     res.status(400).send({
                                         ok: false,
-                                        error: { name: 'Error restableciendo contraseña 😲', message: 'El usuario no fue encontrado', icono: 'error' }
+                                        error: { name: 'Error actualizando contraseña 😵', message: 'Error en la base de datos', icono: 'error' }
                                     });
-                                }
-                            })
-                            .catch(err => {
-                                res.status(400).send({
-                                    ok: false,
-                                    error: { name: 'Error restableciendo contraseña 😲', message: 'Error en la base de datos', icono: 'error' }
                                 });
+                        } else {
+                            return res.status(422).send({
+                                ok: false,
+                                error: { name: 'Error actualizando contraseña 😯', message: 'Las contraseñas no coinciden', icono: 'warning' }
                             });
-                    } else {
-                        return res.status(422).send({
-                            ok: false,
-                            error: { name: 'Error restableciendo contraseña 😲', message: 'Las contraseñas no coinciden', icono: 'warning' }
+                        }
+                    }
+                    else {
+                        return res.status(400).send({
+                            error: { name: 'Aviso 🤨', message: 'El token ha expirado, la contraseña ya fue actualizada, puede iniciar sesión', icono: 'info', redireccionar: true }
                         });
                     }
                 });

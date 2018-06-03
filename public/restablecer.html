@@ -130,7 +130,20 @@
                     } else {
                         //alert('Error', response)
                         //alert(JSON.stringify(response.message));
-                        swal(response.error.name, response.error.message, response.error.icono);
+                        if (response.error.redireccionar) {
+                            swal({
+                                title: response.error.name,
+                                text: response.error.message,
+                                type: 'warning',
+                                timer: 4000,
+                                showConfirmButton: false
+                            }, function () {
+                                window.location.href = "//localhost:4200/login";
+                            });
+                        }
+                        else {
+                            swal(response.error.name, response.error.message, response.error.icono);
+                        }
                     }
                 });
             }
