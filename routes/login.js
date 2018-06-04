@@ -56,11 +56,12 @@ function login(req, res) {
                     usuario: usuario,
                     //token: token,
                     id: usuario.id
-                    //menu: obtenerMenu(usuarioBD.role)
+                        //menu: obtenerMenu(usuarioBD.role)
                 });
             }
         })
         .catch(err => {
+            console.log('error:', err);
             res.status(400).send({
                 ok: false,
                 error: { name: 'Error en la conexión 😨', message: 'Verifique la conexión con la bd' }
@@ -99,13 +100,14 @@ function olvidoContrasena(req, res) {
                     .then(usuReseteo => {
                         if (usuReseteo) {
                             done(null, token, usuReseteo);
-                        }/*  else {
-                            //done('User not found.');
-                            return res.status(400).json({
-                                ok: false,
-                                error: { name: 'Error actualizando contraseña 😞', message: `Usuario ${req.body.usuario} no encontrado` }
-                            }); 
-                        }*/
+                        }
+                        /*  else {
+                                                    //done('User not found.');
+                                                    return res.status(400).json({
+                                                        ok: false,
+                                                        error: { name: 'Error actualizando contraseña 😞', message: `Usuario ${req.body.usuario} no encontrado` }
+                                                    }); 
+                                                }*/
                     });
             },
             (token, user, done) => {
@@ -120,7 +122,7 @@ function olvidoContrasena(req, res) {
                     }
                 };
 
-                nm.sendMail(data, function (err) {
+                nm.sendMail(data, function(err) {
                     if (!err) {
                         res.status(200)
                             .json({
@@ -145,8 +147,7 @@ function restablecerContrasena(req, res, next) {
             return res.status(400).send({
                 error: { name: 'Error actualizando contraseña ☹️', message: 'El token de restablecimiento de contraseña no es válido o ha expirado', icono: 'error' }
             });
-        }
-        else {
+        } else {
             req.usuario = decoded.usuario;
             db.oneOrNone('SELECT id, usuario, email, nombre, apellido, estado FROM usuarios WHERE usuario=$1 AND activo=true', [req.usuario])
                 .then(usuario => {
@@ -182,7 +183,7 @@ function restablecerContrasena(req, res, next) {
                                             }
                                         };
 
-                                        nm.sendMail(data, function (err) {
+                                        nm.sendMail(data, function(err) {
                                             if (!err) {
                                                 return res.json({ message: 'Reseteo de contraseña' });
                                             } else {
@@ -210,8 +211,7 @@ function restablecerContrasena(req, res, next) {
                                 error: { name: 'Error actualizando contraseña 😯', message: 'Las contraseñas no coinciden', icono: 'warning' }
                             });
                         }
-                    }
-                    else {
+                    } else {
                         return res.status(400).send({
                             error: { name: 'Aviso 🤨', message: 'El token ha expirado, la contraseña ya fue actualizada, puede iniciar sesión', icono: 'info', redireccionar: true }
                         });
