@@ -52,3 +52,6 @@ https://codeburst.io/how-to-easily-set-up-node-environment-variables-in-your-js-
 
 # Servidor smtp
 https://app.mailgun.com/app/dashboard
+
+# Imprimir variables de Heroku
+heroku run printenv -a die-apps-server

@@ -117,7 +117,7 @@ function olvidoContrasena(req, res) {
                     template: 'forgot-password-email',
                     subject: 'Restablecer contraseña',
                     context: {
-                        url: process.env.FRONT_URL + '/login/restablecer?token=' + token,
+                        url: process.env.BACK_URL + '/login/restablecer?token=' + token,
                         name: user.nombre + ' ' + user.apellido
                     }
                 };
@@ -178,7 +178,7 @@ function restablecerContrasena(req, res, next) {
                                             template: 'reset-password-email',
                                             subject: 'Confirmación de actualización de contraseña',
                                             context: {
-                                                url: 'http://localhost:4200/login',
+                                                url: process.env.FRONT_URL + '/login',
                                                 name: usuario.nombre + ' ' + usuario.apellido
                                             }
                                         };
