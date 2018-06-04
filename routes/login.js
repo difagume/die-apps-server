@@ -72,7 +72,7 @@ function olvidoContrasena(req, res) {
     async.waterfall(
         [
             (done) => {
-                db.oneOrNone('SELECT id, usuario, email, password, nombre, apellido, rol, img, social FROM usuarios WHERE usuario=$1 AND activo=true', [req.body.usuario])
+                db.oneOrNone('SELECT id, usuario, email, password, nombre, apellido, rol, img, social FROM usuarios WHERE usuario=$1 OR email=$1 AND activo=true', [req.body.usuario])
                     .then(user => {
                         if (user) {
                             done(null, user);
@@ -80,7 +80,7 @@ function olvidoContrasena(req, res) {
                             //done('User not found.');
                             return res.status(400).json({
                                 ok: false,
-                                error: { name: 'Error actualizando contraseña 😞', message: `Usuario ${req.body.usuario} no encontrado` }
+                                error: { name: 'Error actualizando contraseña 😞', message: `Usuario o email ${req.body.usuario} no encontrado` }
                             });
                         }
                     });
