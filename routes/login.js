@@ -117,7 +117,7 @@ function olvidoContrasena(req, res) {
                     template: 'forgot-password-email',
                     subject: 'Restablecer contraseña',
                     context: {
-                        url: process.env.URL + ':' + process.env.PORT + '/login/restablecer?token=' + token,
+                        url: process.env.URL + '/login/restablecer?token=' + token,
                         name: user.nombre + ' ' + user.apellido
                     }
                 };
