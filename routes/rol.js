@@ -1,5 +1,5 @@
 var express = require('express');
-var db = require('../db');
+var db = require('../config/db');
 var bcrypt = require('bcryptjs');
 var mdAutenticacion = require('../middlewares/autenticacion');
 
@@ -33,7 +33,7 @@ function obtenerTodosLosRoles(req, res) {
 function crearRol(req, res) {
     var rol = req.body.nombre;
     db.one('insert into rol(nombre) values(${nombre})' +
-        'RETURNING *', req.body)
+            'RETURNING *', req.body)
         .then(rolCreado => {
             res.status(200)
                 .json({
@@ -103,14 +103,12 @@ function mensajeError(res, err, mensaje) {
             ok: false,
             error: { name: `${mensaje} 😪`, message: 'Verifique la conexión con la bd' }
         });
-    }
-    else if (err.code === '23505') {
+    } else if (err.code === '23505') {
         res.status(400).send({
             ok: false,
             error: { name: `${mensaje} 😪`, message: 'El rol ingresado ya existe' }
         });
-    }
-    else {
+    } else {
         res.status(400).send({
             ok: false,
             error: { name: `${mensaje} 😱`, message: 'Existe un error en la sintaxis' }

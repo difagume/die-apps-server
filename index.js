@@ -23,11 +23,11 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 //CORS
-app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
-  next();
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
+    next();
 });
 
 // Importar rutas
@@ -36,12 +36,12 @@ var loginRoutes = require('./routes/login');
 var rolRoutes = require('./routes/rol')
 
 app.get('/times', (req, res) => {
-  let result = ''
-  const times = process.env.TIMES || 5
-  for (i = 0; i < times; i++) {
-    result += i + ' '
-  }
-  res.send(result)
+    let result = ''
+    const times = process.env.TIMES || 5
+    for (i = 0; i < times; i++) {
+        result += i + ' '
+    }
+    res.send(result)
 })
 
 /* app.get('/db', async (req, res) => {
@@ -57,11 +57,11 @@ app.get('/times', (req, res) => {
 }); */
 
 app.use(express.static(path.join(__dirname, 'public')))
-  .use('/login', loginRoutes)
-  .use('/usuario', usuarioRoutes)
-  .use('/rol', rolRoutes)
-  .set('views', path.join(__dirname, 'views'))
-  .set('view engine', 'ejs')
-  .get('/', (req, res) => res.render('pages/index'))
-  .get('/cool', (req, res) => res.send(cool()))
-  .listen(PUERTO, () => console.log('Express server escuchando en el puerto ' + PUERTO + ': \x1b[32m%s\x1b[0m', 'online'))
+    .use('/login', loginRoutes)
+    .use('/usuario', usuarioRoutes)
+    .use('/rol', rolRoutes)
+    .set('views', path.join(__dirname, 'views'))
+    .set('view engine', 'ejs')
+    .get('/', (req, res) => res.render('pages/index'))
+    .get('/cool', (req, res) => res.send(cool()))
+    .listen(PUERTO, () => console.log('Express server escuchando en el puerto ' + PUERTO + ': \x1b[32m%s\x1b[0m', 'online'))

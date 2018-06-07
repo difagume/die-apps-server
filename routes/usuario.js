@@ -1,5 +1,5 @@
 var express = require('express');
-var db = require('../db');
+var db = require('../config/db');
 var bcrypt = require('bcryptjs');
 var mdAutenticacion = require('../middlewares/autenticacion');
 
@@ -18,116 +18,113 @@ app.put('/eliminar/:id', mdAutenticacion.verficaToken, eliminarUsuario);
  * Funciones
  */
 function obtenerTodosLosUsuarios(req, res) {
-  db.any('select * from usuarios where activo = true order by 1')
-    .then(data => {
-      res.status(200)
-        .json({
-          ok: true,
-          usuarios: data
+    db.any('select * from usuarios where activo = true order by 1')
+        .then(data => {
+            res.status(200)
+                .json({
+                    ok: true,
+                    usuarios: data
+                });
+        })
+        .catch(err => {
+            mensajeError(res, err, 'Error al obtener los usuarios');
         });
-    })
-    .catch(err => {
-      mensajeError(res, err, 'Error al obtener los usuarios');
-    });
 }
 
 function registrarUsuario(req, res) {
-  var usuario = req.body;
-  usuario.password = bcrypt.hashSync(usuario.password, 10);
-  db.one('insert into usuarios(usuario, email, password, nombre, apellido, rol, img, social)' +
-    'values(${usuario}, ${email}, ${password}, ${nombre}, ${apellido}, ${rol}, ${img}, ${social})' +
-    'RETURNING *', usuario)
-    .then(usuarioCreado => {
-      res.status(200)
-        .json({
-          ok: true,
-          usuario: usuarioCreado,
-          name: 'Usuario creado 😏',
-          message: `El usuario: ${usuarioCreado.usuario} ha sido creado`
+    var usuario = req.body;
+    usuario.password = bcrypt.hashSync(usuario.password, 10);
+    db.one('insert into usuarios(usuario, email, password, nombre, apellido, rol, img, social)' +
+            'values(${usuario}, ${email}, ${password}, ${nombre}, ${apellido}, ${rol}, ${img}, ${social})' +
+            'RETURNING *', usuario)
+        .then(usuarioCreado => {
+            res.status(200)
+                .json({
+                    ok: true,
+                    usuario: usuarioCreado,
+                    name: 'Usuario creado 😏',
+                    message: `El usuario: ${usuarioCreado.usuario} ha sido creado`
+                });
+        })
+        .catch(err => {
+            mensajeError(res, err, 'Error al crear el usuario', usuario);
         });
-    })
-    .catch(err => {
-      mensajeError(res, err, 'Error al crear el usuario', usuario);
-    });
 }
 
 function actualizarUsuario(req, res) {
-  var id = req.params.id;
-  var usuario = req.body;
-  db.result('UPDATE usuarios SET usuario=$1, email=$2, rol=$3, ' +
-    'img=$4, social=$5, nombre=$6, apellido=$7 WHERE id=$8;',
-    [usuario.usuario, usuario.email, usuario.rol, usuario.img,
-    usuario.social, usuario.nombre, usuario.apellido, id])
-    .then(result => {
-      if (result.rowCount > 0) {
-        res.status(200)
-          .json({
-            ok: true,
-            name: 'Usuario actualizado 😏',
-            message: `El usuario ${usuario.usuario} ha sido actualizado`
-          });
-      } else {
-        res.status(400).send({
-          ok: false,
-          error: { name: 'Error en la actualización 🤔', message: 'El usuario no fue encontrado' }
+    var id = req.params.id;
+    var usuario = req.body;
+    db.result('UPDATE usuarios SET usuario=$1, email=$2, rol=$3, ' +
+            'img=$4, social=$5, nombre=$6, apellido=$7 WHERE id=$8;', [usuario.usuario, usuario.email, usuario.rol, usuario.img,
+                usuario.social, usuario.nombre, usuario.apellido, id
+            ])
+        .then(result => {
+            if (result.rowCount > 0) {
+                res.status(200)
+                    .json({
+                        ok: true,
+                        name: 'Usuario actualizado 😏',
+                        message: `El usuario ${usuario.usuario} ha sido actualizado`
+                    });
+            } else {
+                res.status(400).send({
+                    ok: false,
+                    error: { name: 'Error en la actualización 🤔', message: 'El usuario no fue encontrado' }
+                });
+            }
+        })
+        .catch(err => {
+            mensajeError(res, err, 'Error al actualizar el usuario');
         });
-      }
-    })
-    .catch(err => {
-      mensajeError(res, err, 'Error al actualizar el usuario');
-    });
 }
 
 function eliminarUsuario(req, res) {
-  var id = req.params.id;
-  var usuario = req.body.usuario;
-  db.result('UPDATE usuarios SET activo = false WHERE id=$1;', [id])
-    .then(result => {
-      if (result.rowCount > 0) {
-        res.status(200)
-          .json({
-            ok: true,
-            name: 'Usuario eliminado 😪',
-            message: `El usuario ${usuario} ha sido eliminado`
-          });
-      } else {
-        res.status(400).send({
-          ok: false,
-          error: { name: 'Error en la eliminación 😲', message: 'El usuario no fue encontrado' }
+    var id = req.params.id;
+    var usuario = req.body.usuario;
+    db.result('UPDATE usuarios SET activo = false WHERE id=$1;', [id])
+        .then(result => {
+            if (result.rowCount > 0) {
+                res.status(200)
+                    .json({
+                        ok: true,
+                        name: 'Usuario eliminado 😪',
+                        message: `El usuario ${usuario} ha sido eliminado`
+                    });
+            } else {
+                res.status(400).send({
+                    ok: false,
+                    error: { name: 'Error en la eliminación 😲', message: 'El usuario no fue encontrado' }
+                });
+            }
+        })
+        .catch(err => {
+            mensajeError(res, err, 'Error al eliminar el usuario');
         });
-      }
-    })
-    .catch(err => {
-      mensajeError(res, err, 'Error al eliminar el usuario');
-    });
 }
 
 function mensajeError(res, err, mensaje, dato) {
-  // console.log('errorrrrrrr', err);
-  if (err.code === 'ECONNREFUSED') {
-    res.status(400).send({
-      ok: false,
-      error: { name: `${mensaje} 😪`, message: 'Verifique la conexión con la bd' }
-    });
-  }
-  else if (err.constraint === 'uk_usuario') {
-    res.status(400).send({
-      ok: false,
-      error: { name: `${mensaje} 😪`, message: `El usuario ${dato.usuario} ya existe` }
-    });
-  }
-  else if (err.constraint === 'uk_email') {
-    res.status(400).send({
-      ok: false,
-      error: { name: `${mensaje} 😪`, message: `El email ${dato.email} ya existe` }
-    });
-  }
-  else {
-    res.status(400).send({
-      ok: false,
-      error: { name: `${mensaje} 😱`, message: 'Existe un error en la sintaxis' }
-    });
-  }
+    // console.log('errorrrrrrr', err);
+    if (err.code === 'ECONNREFUSED') {
+        res.status(400).send({
+            ok: false,
+            error: { name: `${mensaje} 😪`, message: 'Verifique la conexión con la bd' }
+        });
+    } else if (err.constraint === 'uk_usuario') {
+        res.status(400).send({
+            ok: false,
+            error: { name: `${mensaje} 😪`, message: `El usuario ${dato.usuario} ya existe` }
+        });
+    } else if (err.constraint === 'uk_email') {
+        res.status(400).send({
+            ok: false,
+            error: { name: `${mensaje} 😪`, message: `El email ${dato.email} ya existe` }
+        });
+    } else {
+        res.status(400).send({
+            ok: false,
+            error: { name: `${mensaje} 😱`, message: 'Existe un error en la sintaxis' }
+        });
+    }
 }
 
 /* function registrarUsuario(req, res) {

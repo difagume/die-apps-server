@@ -1,12 +1,12 @@
 var jwt = require('jsonwebtoken'); // https://github.com/auth0/node-jsonwebtoken
-require('dotenv').config();
+//require('dotenv').config();
 
 var SEED = process.env.SEED;
 
 //=============================
 // Verificar token
 //=============================
-exports.verficaToken = function (req, res, next) {
+exports.verficaToken = function(req, res, next) {
 
     var token = req.query.token;
 
@@ -28,15 +28,14 @@ exports.verficaToken = function (req, res, next) {
 //=============================
 // Verifica ADMIN
 //=============================
-exports.verficaAdminRole = function (req, res, next) {
+exports.verficaAdminRole = function(req, res, next) {
 
     var usuario = req.usuario;
 
     if (usuario.role === 'ADMIN_ROLE') {
         next();
         return;
-    }
-    else {
+    } else {
         return res.status(401).json({
             ok: false,
             mensaje: 'Token incorrecto - No es administrador',
@@ -48,7 +47,7 @@ exports.verficaAdminRole = function (req, res, next) {
 //=============================
 // Verifica ADMIN o Mismo usuario
 //=============================
-exports.verficaAdmin_o_mismoUsuario = function (req, res, next) {
+exports.verficaAdmin_o_mismoUsuario = function(req, res, next) {
 
     var usuario = req.usuario;
     var id = req.params.id;
@@ -56,8 +55,7 @@ exports.verficaAdmin_o_mismoUsuario = function (req, res, next) {
     if (usuario.role === 'ADMIN_ROLE' || usuario._id === id) {
         next();
         return;
-    }
-    else {
+    } else {
         return res.status(401).json({
             ok: false,
             mensaje: 'Token incorrecto - No es administrador ni es el mismo usuario',

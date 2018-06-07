@@ -1,5 +1,5 @@
 var express = require('express');
-var db = require('../db');
+var db = require('../config/db');
 var bcrypt = require('bcryptjs'); // https://github.com/dcodeIO/bcrypt.js
 var jwt = require('jsonwebtoken'); // https://github.com/auth0/node-jsonwebtoken
 var async = require('async');
