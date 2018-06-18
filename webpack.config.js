@@ -3,6 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const variables = require('./config/config');
 
 module.exports = {
+    mode: 'development',
     target: 'node',
     entry: './config/config.js',
     output: {
@@ -15,9 +16,9 @@ module.exports = {
             filename: 'restablecer.html',
             back_url: `${variables.BACK_URL}/login/restablecer`,
             front_url: `${variables.FRONT_URL}/login`
-                //back_url: `${process.env.BACK_URL}/login/restablecer`,
-                //front_url: `${process.env.FRONT_URL}/login`
-                //url: variables.url
+            //back_url: `${process.env.BACK_URL}/login/restablecer`,
+            //front_url: `${process.env.FRONT_URL}/login`
+            //url: variables.url
         })
     ]
 };
