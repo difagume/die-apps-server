@@ -6,7 +6,9 @@ var app = express();
 /**
  * Rutas
  */
-app.get('/', obtenerTodosLosProductos);
+app.get('/menu', obtenerMenu);
+app.get('/productos', obtenerTodosLosProductos);
+app.post('/articulo', mdAutenticacion.verficaToken, crearArticulo);
 
 /**
  * Funciones
@@ -22,6 +24,20 @@ function obtenerTodosLosProductos(req, res) {
         })
         .catch(err => {
             mensajeError(res, err, 'Error al obtener los productos');
+        });
+}
+
+function obtenerMenu(req, res) {
+    db.any('select * from menu where activo = true order by id')
+        .then(data => {
+            res.status(200)
+                .json({
+                    ok: true,
+                    menu: data
+                });
+        })
+        .catch(err => {
+            mensajeError(res, err, 'Error al obtener el menú');
         });
 }
 
