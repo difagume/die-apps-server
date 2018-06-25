@@ -1,6 +1,6 @@
 var express = require('express');
 var db = require('../config/db');
-var bcrypt = require('bcryptjs');
+// var bcrypt = require('bcryptjs');
 var mdAutenticacion = require('../middlewares/autenticacion');
 
 var app = express();
@@ -33,7 +33,7 @@ function obtenerTodosLosRoles(req, res) {
 function crearRol(req, res) {
     var rol = req.body.nombre;
     db.one('insert into rol(nombre) values(${nombre})' +
-            'RETURNING *', req.body)
+        'RETURNING *', req.body)
         .then(rolCreado => {
             res.status(200)
                 .json({

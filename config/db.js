@@ -2,6 +2,7 @@ require('dotenv').config();
 const Promise = require('bluebird');
 const initOptions = {
     promiseLib: Promise
+    // capSQL: true // generate capitalized SQL 
 };
 const pgp = require('pg-promise')(initOptions);
 
