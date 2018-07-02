@@ -11,6 +11,7 @@ var app = express();
 app.get('/menu', obtenerMenu);
 app.get('/productos', obtenerTodosLosProductos);
 app.post('/articulo', mdAutenticacion.verficaToken, crearArticulo);
+app.get('/articulos', obtenerTodosLosArticulo);
 
 /**
  * Funciones
@@ -46,7 +47,7 @@ function obtenerMenu(req, res) {
 function crearArticulo(req, res) {
     let articulo = req.body;
     db.tx(t => {
-        console.log("-- insertando articulo --");
+        console.log("-- insertando artículo --");
         return t.one('INSERT INTO articulo(nombre, valor, activo, id_menu, tiempo_preparacion) VALUES (${nombre}, ${valor}, ${activo}, ${id_menu}, ${tiempo_preparacion}) RETURNING id, nombre', articulo)
             .then(nuevoArt => {
 
@@ -54,7 +55,7 @@ function crearArticulo(req, res) {
                     ad.id_articulo = nuevoArt.id;
                 });
                 // console.log('articuloD:', articulo.articuloDetalle);
-                console.log("-- insertando articulo detalle --");
+                console.log("-- insertando artículo detalle --");
                 //return t.one('INSERT INTO articulo_detalle(id_articulo, id_producto, activo, cantidad) VALUES (${id_articulo}, ${id_producto}, ${activo}, ${cantidad})', articulo.articuloDetalle)
                 // const insertAD = () => pgp.helpers.insert(articulo.articuloDetalle, ['id_articulo', 'id_producto', 'activo', 'cantidad'], 'articulo_detalle');
                 //return t.none(insertAD)
@@ -78,6 +79,28 @@ function crearArticulo(req, res) {
                 });
         }, reason => {
             mensajeError(res, reason, 'Error al crear el artículo');
+        });
+}
+
+function obtenerTodosLosArticulo(req, res) {
+    db.task(t => {
+        return t.map('SELECT id, nombre, valor, id_menu, tiempo_preparacion FROM articulo where activo = true', [], articulo => {
+            return t.any('SELECT id, id_producto, (SELECT nombre FROM producto WHERE activo = true and id=id_producto) as producto, cantidad FROM public.articulo_detalle where activo = true and id_articulo = $1', articulo.id)
+                .then(productos => {
+                    articulo.productos = productos;
+                    return articulo;
+                });
+        }).then(t.batch);
+    })
+        .then(data => {
+            res.status(200)
+                .json({
+                    ok: true,
+                    articulos: data
+                });
+        })
+        .catch(err => {
+            mensajeError(res, err, 'Error al obtener los artículos');
         });
 }
 
