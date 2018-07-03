@@ -62,8 +62,7 @@ function crearArticulo(req, res) {
                 const inserts = articulo.articuloDetalle.map(ad => {
                     return t.none('INSERT INTO articulo_detalle(id_articulo, id_producto, activo, cantidad) VALUES (${id_articulo}, ${id_producto}, ${activo}, ${cantidad})', ad);
                 });
-                t.batch(inserts);
-                return nuevoArt;
+                return t.batch(inserts).then(() => nuevoArt);
                 /* .then(() => {
                 return promise.resolve(nuevoArt.id); 
             });*/
