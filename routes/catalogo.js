@@ -62,8 +62,7 @@ function crearArticulo(req, res) {
                 const inserts = articulo.articuloDetalle.map(ad => {
                     return t.none('INSERT INTO articulo_detalle(id_articulo, id_producto, activo, cantidad) VALUES (${id_articulo}, ${id_producto}, ${activo}, ${cantidad})', ad);
                 });
-                t.batch(inserts);
-                return nuevoArt;
+                return t.batch(inserts).then(() => nuevoArt);
                 /* .then(() => {
                 return promise.resolve(nuevoArt.id); 
             });*/
@@ -84,7 +83,7 @@ function crearArticulo(req, res) {
 
 function obtenerTodosLosArticulo(req, res) {
     db.task(t => {
-        return t.map('SELECT id, nombre, valor, id_menu, tiempo_preparacion FROM articulo where activo = true', [], articulo => {
+        return t.map('SELECT id, nombre, valor, id_menu, (SELECT nombre FROM menu WHERE activo = true and id=id_menu) as menu, tiempo_preparacion FROM articulo where activo = true', [], articulo => {
             return t.any('SELECT id, id_producto, (SELECT nombre FROM producto WHERE activo = true and id=id_producto) as producto, cantidad FROM public.articulo_detalle where activo = true and id_articulo = $1', articulo.id)
                 .then(productos => {
                     articulo.productos = productos;
