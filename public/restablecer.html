@@ -113,7 +113,7 @@
                 event.preventDefault();
                 var token = document.location.href.split('token=')[1];
                 var data = "newPassword=" + document.getElementById('newPassword').value + '&verifyPassword=' + document.getElementById('verifyPassword').value + '&token=' + token;
-                ajaxCall(data, "https://die-apps-server.herokuapp.com/login/restablecer", function(status, response) {
+                ajaxCall(data, "http://localhost:5000/login/restablecer", function(status, response) {
                     if (status == 200) {
                         //alert(response.message);
                         //swal(response.name, response.message, "success");
@@ -124,7 +124,7 @@
                             timer: 3000,
                             showConfirmButton: false
                         }, function() {
-                            window.location.href = "http://localhost:5000/login";
+                            window.location.href = "http://localhost:4200/login";
                         });
                     } else {
                         //alert('Error', response)
@@ -137,7 +137,7 @@
                                 timer: 4000,
                                 showConfirmButton: false
                             }, function() {
-                                window.location.href = "http://localhost:5000/login";
+                                window.location.href = "http://localhost:4200/login";
                             });
                         } else {
                             swal(response.error.name, response.error.message, response.error.icono);

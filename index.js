@@ -6,6 +6,10 @@ const logger = require('morgan');
 const bodyParser = require('body-parser');
 const PUERTO = require('./config/config').PUERTO;
 
+// Agrego postgraphile como HTTP middleware
+const { postgraphile } = require("postgraphile");
+const PostGraphileNestedMutations = require('postgraphile-plugin-nested-mutations');
+
 /* const { Pool } = require('pg');
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -23,11 +27,11 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 //CORS
-app.use(function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
-    next();
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
+  next();
 });
 
 // Importar rutas
@@ -57,13 +61,24 @@ var catalogoRoutes = require('./routes/catalogo')
   }
 }); */
 
+// Conecto con la base de datos y configuro opcines de postgraphile
+app.use(postgraphile(process.env.DATABASE_URL, "public",
+  {
+    appendPlugins: [
+      PostGraphileNestedMutations,
+    ],
+    dynamicJson: true,
+    graphiql: true,
+    // exportGqlSchemaPath: path.join(__dirname, './schema.graphql')
+  }));
+
 app.use(express.static(path.join(__dirname, 'public')))
-    .use('/login', loginRoutes)
-    .use('/usuario', usuarioRoutes)
-    .use('/rol', rolRoutes)
-    .use('/catalogo', catalogoRoutes)
-    .set('views', path.join(__dirname, 'views'))
-    .set('view engine', 'ejs')
-    .get('/', (req, res) => res.render('pages/index'))
-    .get('/cool', (req, res) => res.send(cool()))
-    .listen(PUERTO, () => console.log('Express server escuchando en el puerto ' + PUERTO + ': \x1b[32m%s\x1b[0m', 'online'))
+  .use('/login', loginRoutes)
+  .use('/usuario', usuarioRoutes)
+  .use('/rol', rolRoutes)
+  .use('/catalogo', catalogoRoutes)
+  .set('views', path.join(__dirname, 'views'))
+  .set('view engine', 'ejs')
+  .get('/', (req, res) => res.render('pages/index'))
+  .get('/cool', (req, res) => res.send(cool()))
+  .listen(PUERTO, () => console.log('Express server escuchando en el puerto ' + PUERTO + ': \x1b[32m%s\x1b[0m', 'online'))

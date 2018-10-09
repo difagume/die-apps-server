@@ -55,3 +55,26 @@ https://app.mailgun.com/app/dashboard
 
 # Imprimir variables de Heroku
 heroku run printenv -a die-apps-server
+
+
+## Graphile ejemplos GraphQL
+https://www.graphile.org/postgraphile/examples/
+
+
+## Usando PostGraphile como una librería
+https://www.graphile.org/postgraphile/usage-library/
+https://github.com/mlipscombe/postgraphile-plugin-nested-mutations
+# URL para consultas
+http://localhost:5000/graphql
+# URL interfaz de consultas
+http://localhost:5000/graphiql
+
+
+
+######## package.json --> webpack ########
+"scripts": {
+        "prestart": "webpack",
+        "start": "nodemon index.js",
+        "test": "node test.js"
+    }
+##########################################

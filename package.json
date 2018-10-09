@@ -7,7 +7,6 @@
     },
     "main": "index.js",
     "scripts": {
-        "prestart": "webpack",
         "start": "nodemon index.js",
         "test": "node test.js"
     },
@@ -24,7 +23,9 @@
         "nodemailer": "^4.6.7",
         "nodemailer-express-handlebars": "^3.0.0",
         "pg": "^7.4.3",
-        "pg-promise": "^8.4.4"
+        "pg-promise": "^8.4.4",
+        "postgraphile": "^4.0.0",
+        "postgraphile-plugin-nested-mutations": "^1.0.0-alpha.10"
     },
     "devDependencies": {
         "html-webpack-plugin": "^3.2.0",

@@ -93,7 +93,7 @@
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("__webpack_require__(/*! dotenv */ \"./node_modules/dotenv/lib/main.js\").config();\nmodule.exports = {\n    CADUCIDAD_TOKEN: 14400, // 4 horas\n    PUERTO: process.env.PORT || 5000,\n    FRONT_URL: process.env.FRONT_URL,\n    BACK_URL: process.env.BACK_URL\n}\n\n//# sourceURL=webpack:///./config/config.js?");
+eval("__webpack_require__(/*! dotenv */ \"./node_modules/dotenv/lib/main.js\").config();\r\nmodule.exports = {\r\n    //CADUCIDAD_TOKEN: 14400, // 4 horas\r\n    CADUCIDAD_TOKEN: 5, // segundos\r\n    PUERTO: process.env.PORT || 5000,\r\n    FRONT_URL: process.env.FRONT_URL,\r\n    BACK_URL: process.env.BACK_URL\r\n}\n\n//# sourceURL=webpack:///./config/config.js?");
 
 /***/ }),
 

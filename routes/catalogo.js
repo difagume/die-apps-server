@@ -8,15 +8,15 @@ var app = express();
 /**
  * Rutas
  */
-app.get('/menu', obtenerMenu);
-app.get('/productos', obtenerTodosLosProductos);
+// app.get('/menu', obtenerMenu);
+// app.get('/productos', obtenerTodosLosProductos);
 app.post('/articulo', mdAutenticacion.verficaToken, crearArticulo);
-app.get('/articulos', obtenerTodosLosArticulo);
+// app.get('/articulos', obtenerTodosLosArticulo);
 
 /**
  * Funciones
  */
-function obtenerTodosLosProductos(req, res) {
+/* function obtenerTodosLosProductos(req, res) {
     db.any('select * from producto where activo = true order by nombre')
         .then(data => {
             res.status(200)
@@ -28,9 +28,9 @@ function obtenerTodosLosProductos(req, res) {
         .catch(err => {
             mensajeError(res, err, 'Error al obtener los productos');
         });
-}
+} */
 
-function obtenerMenu(req, res) {
+/* function obtenerMenu(req, res) {
     db.any('select * from menu where activo = true order by id')
         .then(data => {
             res.status(200)
@@ -42,7 +42,7 @@ function obtenerMenu(req, res) {
         .catch(err => {
             mensajeError(res, err, 'Error al obtener el menú');
         });
-}
+} */
 
 function crearArticulo(req, res) {
     let articulo = req.body;
@@ -81,7 +81,7 @@ function crearArticulo(req, res) {
         });
 }
 
-function obtenerTodosLosArticulo(req, res) {
+/* function obtenerTodosLosArticulo(req, res) {
     db.task(t => {
         return t.map('SELECT id, nombre, valor, id_menu, (SELECT nombre FROM menu WHERE activo = true and id=id_menu) as menu, tiempo_preparacion FROM articulo where activo = true', [], articulo => {
             return t.any('SELECT id, id_producto, (SELECT nombre FROM producto WHERE activo = true and id=id_producto) as producto, cantidad FROM public.articulo_detalle where activo = true and id_articulo = $1', articulo.id)
@@ -101,7 +101,7 @@ function obtenerTodosLosArticulo(req, res) {
         .catch(err => {
             mensajeError(res, err, 'Error al obtener los artículos');
         });
-}
+} */
 
 function mensajeError(res, err, mensaje) {
     // console.log('errorrrrrrr', err);
