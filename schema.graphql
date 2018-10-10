@@ -113,7 +113,7 @@ input ArticuloDetalleInput {
   idProducto: BigInt
   activo: Boolean
   cantidad: Int!
-  articuloToIdArticulo: FkArticuloDetalleAticuloInput
+  articuloToIdArticulo: FkArticuloDetalleArticuloInput
   productoToIdProducto: FkArticuloDetalleProductoInput
 }
 
@@ -182,7 +182,7 @@ input ArticuloInput {
   idMenu: BigInt
   tiempoPreparacion: Time
   menuToIdMenu: FkItemMenuInput
-  articuloDetallesUsingId: FkArticuloDetalleAticuloInverseInput
+  articuloDetallesUsingId: FkArticuloDetalleArticuloInverseInput
 }
 
 """
@@ -834,12 +834,12 @@ type DeleteUsuarioPayload {
 }
 
 """The fields on `articulo` to look up the row to connect."""
-input FkArticuloDetalleAticuloArticuloConnectInput {
+input FkArticuloDetalleArticuloArticuloConnectInput {
   id: BigInt!
 }
 
 """The `articulo` to be created by this mutation."""
-input FkArticuloDetalleAticuloArticuloCreateInput {
+input FkArticuloDetalleArticuloArticuloCreateInput {
   id: BigInt
   nombre: String!
   valor: BigFloat!
@@ -847,52 +847,52 @@ input FkArticuloDetalleAticuloArticuloCreateInput {
   idMenu: BigInt
   tiempoPreparacion: Time
   menuToIdMenu: FkItemMenuInput
-  articuloDetallesUsingId: FkArticuloDetalleAticuloInverseInput
+  articuloDetallesUsingId: FkArticuloDetalleArticuloInverseInput
 }
 
 """The fields on `articuloDetalle` to look up the row to connect."""
-input FkArticuloDetalleAticuloArticuloDetalleConnectInput {
+input FkArticuloDetalleArticuloArticuloDetalleConnectInput {
   id: BigInt!
 }
 
 """The `articuloDetalle` to be created by this mutation."""
-input FkArticuloDetalleAticuloArticuloDetalleCreateInput {
+input FkArticuloDetalleArticuloArticuloDetalleCreateInput {
   id: BigInt
   idProducto: BigInt
   activo: Boolean
   cantidad: Int!
-  articuloToIdArticulo: FkArticuloDetalleAticuloInput
+  articuloToIdArticulo: FkArticuloDetalleArticuloInput
   productoToIdProducto: FkArticuloDetalleProductoInput
 }
 
 """
 Input for the nested mutation of `articulo` in the `ArticuloDetalleInput` mutation.
 """
-input FkArticuloDetalleAticuloInput {
+input FkArticuloDetalleArticuloInput {
   """
   The primary key(s) for `articulo` for the far side of the relationship.
   """
-  connect: FkArticuloDetalleAticuloArticuloConnectInput
+  connect: FkArticuloDetalleArticuloArticuloConnectInput
 
   """
   A `ArticuloInput` object that will be created and connected to this object.
   """
-  create: FkArticuloDetalleAticuloArticuloCreateInput
+  create: FkArticuloDetalleArticuloArticuloCreateInput
 }
 
 """
 Input for the nested mutation of `articuloDetalle` in the `ArticuloInput` mutation.
 """
-input FkArticuloDetalleAticuloInverseInput {
+input FkArticuloDetalleArticuloInverseInput {
   """
   The primary key(s) for `articuloDetalle` for the far side of the relationship.
   """
-  connect: [FkArticuloDetalleAticuloArticuloDetalleConnectInput!]
+  connect: [FkArticuloDetalleArticuloArticuloDetalleConnectInput!]
 
   """
   A `ArticuloDetalleInput` object that will be created and connected to this object.
   """
-  create: [FkArticuloDetalleAticuloArticuloDetalleCreateInput!]
+  create: [FkArticuloDetalleArticuloArticuloDetalleCreateInput!]
 }
 
 """The fields on `articuloDetalle` to look up the row to connect."""
@@ -906,7 +906,7 @@ input FkArticuloDetalleProductoArticuloDetalleCreateInput {
   idArticulo: BigInt
   activo: Boolean
   cantidad: Int!
-  articuloToIdArticulo: FkArticuloDetalleAticuloInput
+  articuloToIdArticulo: FkArticuloDetalleArticuloInput
   productoToIdProducto: FkArticuloDetalleProductoInput
 }
 
@@ -968,7 +968,7 @@ input FkItemMenuArticuloCreateInput {
   activo: Boolean
   tiempoPreparacion: Time
   menuToIdMenu: FkItemMenuInput
-  articuloDetallesUsingId: FkArticuloDetalleAticuloInverseInput
+  articuloDetallesUsingId: FkArticuloDetalleArticuloInverseInput
 }
 
 """
