@@ -6,7 +6,7 @@ var SEED = process.env.SEED;
 //=============================
 // Verificar token
 //=============================
-exports.verficaToken = function(req, res, next) {
+exports.verficaToken = function (req, res, next) {
 
     var token = req.query.token;
 
@@ -44,16 +44,15 @@ exports.verficaTokenHeader = (req, res, next) => {
                 sesionCaducada: true,
                 err: err
             });
-        } else {
-            // console.log("123 -> ", decoded);
-            // req.usuario = decoded.usuario;
-            /* res.status(200).json({
-                ok: true,
-                usuario: decoded.usuario,
-                token: 'validado'
-            }); */
-            next();
         }
+        //console.log("123 -> ", decoded);
+        // req.usuario = decoded.usuario;
+        /* res.status(200).json({
+            ok: true,
+            usuario: decoded.usuario,
+            token: 'validado'
+        }); */
+        next();
     });
 }
 
@@ -61,7 +60,7 @@ exports.verficaTokenHeader = (req, res, next) => {
 //=============================
 // Verifica ADMIN
 //=============================
-exports.verficaAdminRole = function(req, res, next) {
+exports.verficaAdminRole = function (req, res, next) {
 
     var usuario = req.usuario;
 
@@ -80,7 +79,7 @@ exports.verficaAdminRole = function(req, res, next) {
 //=============================
 // Verifica ADMIN o Mismo usuario
 //=============================
-exports.verficaAdmin_o_mismoUsuario = function(req, res, next) {
+exports.verficaAdmin_o_mismoUsuario = function (req, res, next) {
 
     var usuario = req.usuario;
     var id = req.params.id;
