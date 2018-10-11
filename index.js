@@ -42,7 +42,17 @@ var loginRoutes = require('./routes/login');
 var rolRoutes = require('./routes/rol')
 var catalogoRoutes = require('./routes/catalogo')
 
-
+var pgraphileOpciones = {
+  /* additionalGraphQLContextFromRequest: req => ({
+      headers: req.headers
+  }), */
+  appendPlugins: [
+    PostGraphileNestedMutations,
+  ],
+  dynamicJson: true,
+  graphiql: true,
+  // exportGqlSchemaPath: path.join(__dirname, './schema.graphql')
+}
 
 
 /* const populateJWT = (req, res, next) => {
@@ -53,25 +63,6 @@ var catalogoRoutes = require('./routes/catalogo')
 // app.use('/graphiql', populateJWT);
 // app.use('/graphql', populateJWT);
 
-// Verifica que el token que viene en el header.authorization sea válido para realizar las consultas de graphql
-app.use('/graphql', jwt({ secret: process.env.SEED }), (err, req, res, next) => {
-  //console.log('---> ', req.headers.authorization);
-  if (err) return res.status(401).json({ error: err });
-  res.sendStatus(200);
-  next();
-});
-// Conecto con la base de datos y configuro opcines de postgraphile
-app.use(postgraphile(process.env.DATABASE_URL, "public", {
-  /* additionalGraphQLContextFromRequest: req => ({
-      headers: req.headers
-  }), */
-  appendPlugins: [
-    PostGraphileNestedMutations,
-  ],
-  dynamicJson: true,
-  graphiql: true,
-  // exportGqlSchemaPath: path.join(__dirname, './schema.graphql')
-}))
 
 app.use(express.static(path.join(__dirname, 'public')))
   .use('/login', loginRoutes)
@@ -82,7 +73,18 @@ app.use(express.static(path.join(__dirname, 'public')))
   .set('view engine', 'ejs')
   .get('/', (req, res) => res.render('pages/index'))
   .get('/cool', (req, res) => res.send(cool()))
-  // .use('/die', bodyParser.json(), mdAutenticacion.verficaTokenHeader, (req, res) => res.redirect('/graphql'))
-  // .use('/die', (req, res) => { console.log(req.headers) })
-
+  // Verifica que el token que viene en el header.authorization sea válido para realizar las consultas de graphql
+  .use('/graphql', jwt({ secret: process.env.SEED }), (err, req, res, next) => {
+    //console.log('---> ', req.headers.authorization);
+    if (err) return res.status(401).json({
+      ok: false,
+      error: { name: 'Sesión de usuario 🤨', message: 'Su sesión ha caducado, por favor vuelva a iniciar sesión' },
+      sesionCaducada: true,
+      err: err
+    });
+    res.sendStatus(200);
+    next();
+  })
+  // Conecto con la base de datos y configuro opcines de postgraphile
+  .use(postgraphile(process.env.DATABASE_URL, "public", pgraphileOpciones))
   .listen(PUERTO, () => console.log('Express server escuchando en el puerto ' + PUERTO + ': \x1b[32m%s\x1b[0m', 'online'))
