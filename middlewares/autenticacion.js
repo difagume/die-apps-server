@@ -6,7 +6,7 @@ var SEED = process.env.SEED;
 //=============================
 // Verificar token
 //=============================
-exports.verficaToken = function (req, res, next) {
+exports.verficaToken = function(req, res, next) {
 
     var token = req.query.token;
 
@@ -26,41 +26,9 @@ exports.verficaToken = function (req, res, next) {
 
 
 //=============================
-// Verificar token del HEADER
-//=============================
-exports.verficaTokenHeader = (req, res, next) => {
-
-    var token = req.headers.token;
-
-    console.log('token --> ');
-    console.log(token);
-    // next();
-
-    jwt.verify(token, SEED, (err, decoded) => {
-        if (err) {
-            return res.status(401).json({
-                ok: false,
-                error: { name: 'Sesión de usuario 🤨', message: 'Su sesión ha caducado, por favor vuelva a iniciar sesión' },
-                sesionCaducada: true,
-                err: err
-            });
-        }
-        //console.log("123 -> ", decoded);
-        // req.usuario = decoded.usuario;
-        /* res.status(200).json({
-            ok: true,
-            usuario: decoded.usuario,
-            token: 'validado'
-        }); */
-        next();
-    });
-}
-
-
-//=============================
 // Verifica ADMIN
 //=============================
-exports.verficaAdminRole = function (req, res, next) {
+exports.verficaAdminRole = function(req, res, next) {
 
     var usuario = req.usuario;
 
@@ -79,7 +47,7 @@ exports.verficaAdminRole = function (req, res, next) {
 //=============================
 // Verifica ADMIN o Mismo usuario
 //=============================
-exports.verficaAdmin_o_mismoUsuario = function (req, res, next) {
+exports.verficaAdmin_o_mismoUsuario = function(req, res, next) {
 
     var usuario = req.usuario;
     var id = req.params.id;

@@ -64,6 +64,9 @@ https://www.graphile.org/postgraphile/examples/
 ## Usando PostGraphile como una librería
 https://www.graphile.org/postgraphile/usage-library/
 https://github.com/mlipscombe/postgraphile-plugin-nested-mutations
+#
+https://github.com/graphile/postgraphile/issues/346#issuecomment-277989713
+https://github.com/graphile/postgraphile/issues/824#issuecomment-411549029
 # URL para consultas
 http://localhost:5000/graphql
 # URL interfaz de consultas
